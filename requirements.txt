@@ -1,0 +1,7 @@
+streamlit
+mysql-connector-python
+pandas
+streamlit
+pandas
+mysql-connector-python
+pyCricbuzz
