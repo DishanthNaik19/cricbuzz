@@ -4,31 +4,43 @@ Created on Sat Sep  6 05:50:39 2025
 
 @author: Dishanth
 """
-
 import mysql.connector
-import pandas as pd
+import streamlit as st
 
+# Use Streamlit cache to reuse connections (avoids reconnecting every run)
+@st.cache_resource
 def get_connection():
-    return mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",          # replace with your MySQL username
-        password="qwerty123456@#$", # replace with your MySQL password
-        database="cricbuzz"
-    )
+    try:
+        conn = mysql.connector.connect(
+            host="127.0.0.1",        # use 127.0.0.1 instead of localhost
+            user="root",             # your MySQL username
+            password="qwerty123456@#$",  # your MySQL password
+            database="cricbuzz",     # your database name
+            port=3306
+        )
+        return conn
+    except mysql.connector.Error as err:
+        st.error(f"Database connection failed: {err}")
+        return None
+
 
 def run_query(query, params=None, fetch=True):
     conn = get_connection()
+    if conn is None:
+        return None
+    
     cursor = conn.cursor(dictionary=True)
     cursor.execute(query, params or ())
+    
     if fetch:
         result = cursor.fetchall()
-        df = pd.DataFrame(result)
+        cursor.close()
+        return result
     else:
         conn.commit()
-        df = None
-    cursor.close()
-    conn.close()
-    return df
+        cursor.close()
+        return None
+
 
 
 if __name__ == "__main__":
