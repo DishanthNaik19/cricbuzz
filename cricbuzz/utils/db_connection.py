@@ -10,7 +10,7 @@ import pandas as pd
 
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",
+        host="127.0.0.1",
         user="root",          # replace with your MySQL username
         password="qwerty123456@#$", # replace with your MySQL password
         database="cricbuzz"
